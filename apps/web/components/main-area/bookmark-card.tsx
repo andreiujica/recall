@@ -38,7 +38,7 @@ export function BookmarkCard({
       onClick={handleCardClick}
     >
       {/* Left accent bar */}
-      <div className="absolute left-0 top-0 bottom-0 w-0 bg-lime-400 dark:bg-lime-300 transition-all duration-300 group-hover:w-1 rounded-l-lg" />
+      <div className="absolute left-0 top-0 bottom-0 w-0 bg-blue-400 dark:bg-blue-500 transition-all duration-300 group-hover:w-1 rounded-l-lg" />
       
       <div className="p-6">
         <div className="flex items-start space-x-4">

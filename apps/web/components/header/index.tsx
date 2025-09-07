@@ -1,5 +1,6 @@
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbPage } from "@workspace/ui/components/breadcrumb";
 import { ThemeToggle } from "./theme-toggle";
+import { CreateBookmark } from "./create-bookmark";
 
 export function AppHeader() {
   return (
@@ -12,7 +13,10 @@ export function AppHeader() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <ThemeToggle className="ml-auto" />
+        <div className="flex items-center gap-2 ml-auto">
+        <CreateBookmark />
+        <ThemeToggle />
+        </div>
       </div>
     </header>
   )

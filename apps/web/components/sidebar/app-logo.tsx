@@ -17,7 +17,7 @@ export function AppLogo() {
       <SidebarMenuItem>
         <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
           <a href="#">
-            <div className="bg-lime-400 text-black dark:bg-lime-300 dark:text-gray-900 flex aspect-square size-8 items-center justify-center rounded-lg">
+            <div className="bg-blue-400 text-white dark:bg-blue-500 dark:text-gray-900 flex aspect-square size-8 items-center justify-center rounded-lg">
               <Contrast className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
