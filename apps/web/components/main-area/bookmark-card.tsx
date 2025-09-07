@@ -1,11 +1,32 @@
 "use client"
 
-import { ExternalLink, Globe } from "lucide-react"
+import { useState } from "react"
+import { ExternalLink, Globe, Trash2 } from "lucide-react"
+import { useQueryClient } from "@tanstack/react-query"
 import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@workspace/ui/components/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
 import { useFavicon } from "@/hooks/use-favicon"
 import { formatDate, formatDomain } from "@/utils/formatters"
+import { api } from "@/lib/ky"
 
 interface BookmarkCardProps {
+  id: string
   url: string
   title?: string | null
   description?: string | null
@@ -17,16 +38,37 @@ interface BookmarkCardProps {
  * This is a bookmark card component that displays a bookmark's title, description, and created at date.
  */
 export function BookmarkCard({ 
+  id,
   url, 
   title, 
   description, 
   createdAt,
   className
 }: BookmarkCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+  const queryClient = useQueryClient()
   const { faviconUrl, handleFaviconError } = useFavicon(url)
 
   const handleCardClick = () => {
     window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (isDeleting) return
+    
+    try {
+      setIsDeleting(true)
+      await api.delete(`bookmarks/${id}`)
+      
+      /**
+       * Invalidate and refetch bookmarks query
+       */
+      await queryClient.invalidateQueries({ queryKey: ["bookmarks"] })
+    } catch (error) {
+      console.error("Failed to delete bookmark:", error)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -39,6 +81,7 @@ export function BookmarkCard({
     >
       {/* Left accent bar */}
       <div className="absolute left-0 top-0 bottom-0 w-0 bg-blue-400 dark:bg-blue-500 transition-all duration-300 group-hover:w-1 rounded-l-lg" />
+      
       
       <div className="p-6">
         <div className="flex items-start space-x-4">
@@ -69,7 +112,48 @@ export function BookmarkCard({
                   {formatDomain(url)}
                 </p>
               </div>
-              <ExternalLink className="ml-2 size-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="flex items-center gap-1 ml-2">
+                <AlertDialog>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                          disabled={isDeleting}
+                          aria-label="Delete bookmark"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Delete bookmark</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Bookmark</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this bookmark? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteConfirm}
+                        disabled={isDeleting}
+                        className="bg-destructive text-white hover:bg-destructive/90"
+                      >
+                        {isDeleting ? "Deleting..." : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <ExternalLink className="size-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              </div>
             </div>
             
             {description && (

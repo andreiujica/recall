@@ -19,6 +19,7 @@ export function MainArea() {
       {bookmarks.map((bookmark) => (
         <BookmarkCard 
           key={bookmark.id} 
+          id={bookmark.id}
           url={bookmark.url} 
           title={bookmark.title} 
           description={bookmark.description} 
