@@ -1,4 +1,7 @@
+<img width="1256" height="656" alt="Screenshot 2025-09-07 at 20 20 53" src="https://github.com/user-attachments/assets/7d4db0b1-fc48-4106-b46a-7702526157ca" />
+
 # Recall
+
 
 A bookmark management application built in 1.5 hours as a rapid prototyping exercise. Built with Next.js, it lets you save, organize, and manage your favorite links with a simple, clean interface.
 
